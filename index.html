@@ -11,15 +11,15 @@
     <div class="activities">
       <h2>أنشطة</h2>
       <ul id="activityList">
-        <li draggable="true" data-slot="2">استيقاظ</li>
-        <li draggable="true" data-slot="2">تنظيف</li>
-        <li draggable="true" data-slot="2">تلفاز</li>
-        <li draggable="true" data-slot="2">وقت لنفسي</li>
-        <li draggable="true" data-slot="2">دراسة</li>
-        <li draggable="true" data-slot="2">رياضة</li>
-        <li draggable="true" data-slot="2">طبخ</li>
-        <li draggable="true" data-slot="2">استرخاء</li>
-        <li draggable="true" data-slot="2">نوم</li>
+        <li draggable="true" data-slot="1">استيقاظ</li>
+        <li draggable="true" data-slot="1">تنظيف</li>
+        <li draggable="true" data-slot="1">تلفاز</li>
+        <li draggable="true" data-slot="1">وقت لنفسي</li>
+        <li draggable="true" data-slot="1">دراسة</li>
+        <li draggable="true" data-slot="1">رياضة</li>
+        <li draggable="true" data-slot="1">طبخ</li>
+        <li draggable="true" data-slot="1">استرخاء</li>
+        <li draggable="true" data-slot="1">نوم</li>
       </ul>
     </div>
     <div class="week">
@@ -38,24 +38,29 @@
         </thead>
         <tbody></tbody>
       </table>
+
       <div id="assessment">
         <h2>تقييم الأسبوع</h2>
         <div id="dailyScores"></div>
+        <div id="extraAssessment">
+          <h3>تقييم النشاطات الأخرى (غير النوم)</h3>
+          <div id="dailyExtraScores"></div>
+          <p id="weeklyExtraScore"></p>
+        </div>
         <p id="weeklyScore"></p>
         <button id="recalculate">تحديث التقييم</button>
-        <div id="exportButtons">
-  <button id="exportPDF">تصدير كـ PDF</button>
-  <button id="exportImage">تصدير كـ صورة</button>
-</div>
+      </div>
 
-<!-- Include libraries -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-
+      <div id="exportButtons">
+        <button id="exportPDF">تصدير كـ PDF</button>
+        <button id="exportImage">تصدير كـ صورة</button>
       </div>
     </div>
   </div>
+
+  <!-- Libraries for export -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <script src="script.js"></script>
 </body>
 </html>
-
