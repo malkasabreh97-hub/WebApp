@@ -78,7 +78,7 @@ h1 {
   font-weight: bold;
 }
 
-#weeklyScore {
+#weeklyScore, #weeklyExtraScore {
   font-size: 1.2em;
   font-weight: bold;
 }
