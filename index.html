@@ -2,11 +2,11 @@
 <html lang="ar">
 <head>
   <meta charset="UTF-8">
-  <title>جدول الأسبوع</title>
+  <title>جدول الأسبوع الذكي</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <h1>جدول الأسبوع</h1>
+  <h1>جدول الأسبوع الذكي</h1>
   <div class="container">
     <div class="activities">
       <h2>أنشطة</h2>
@@ -20,7 +20,6 @@
         <li draggable="true">طبخ</li>
         <li draggable="true">استرخاء</li>
         <li draggable="true">نوم</li>
-        <li draggable="true">DANAAAAAA TIMEEEEEEEEEEEEE</li>
       </ul>
     </div>
     <div class="week">
@@ -37,13 +36,16 @@
             <th>الأحد</th>
           </tr>
         </thead>
-        <tbody>
-          <!-- Hours will be filled by JavaScript -->
-        </tbody>
+        <tbody></tbody>
       </table>
+      <div id="assessment">
+        <h2>تقييم الأسبوع</h2>
+        <p id="score">النسبة: 0%</p>
+        <p id="alert"></p>
+        <button id="recalculate">حساب جديد</button>
+      </div>
     </div>
   </div>
   <script src="script.js"></script>
 </body>
 </html>
-
