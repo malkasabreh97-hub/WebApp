@@ -144,3 +144,31 @@ document.getElementById("recalculate").addEventListener("click", calculateAssess
 
 // Initial calculation
 calculateAssessment();
+
+// Export as PDF
+document.getElementById("exportPDF").addEventListener("click", async () => {
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF('landscape', 'pt', 'a4');
+
+  const table = document.getElementById("weekTable");
+
+  await html2canvas(table).then(canvas => {
+    const imgData = canvas.toDataURL('image/png');
+    const imgWidth = 800;
+    const imgHeight = canvas.height * imgWidth / canvas.width;
+    doc.addImage(imgData, 'PNG', 20, 20, imgWidth, imgHeight);
+    doc.save('جدول_الأسبوع.pdf');
+  });
+});
+
+// Export as Image
+document.getElementById("exportImage").addEventListener("click", async () => {
+  const table = document.getElementById("weekTable");
+  html2canvas(table).then(canvas => {
+    const link = document.createElement('a');
+    link.download = 'جدول_الأسبوع.png';
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+  });
+});
+
