@@ -5,10 +5,9 @@ const sleepHours = [23,0,1,2,3,4,5,6];
 const dailyScoresEl = document.getElementById("dailyScores");
 const weeklyScoreEl = document.getElementById("weeklyScore");
 
-// Load saved data from localStorage
 let savedSchedule = JSON.parse(localStorage.getItem("weeklySchedule")) || {};
 
-// Create table
+// Build table
 hours.forEach(hour => {
   const tr = document.createElement("tr");
   const th = document.createElement("th");
@@ -21,7 +20,6 @@ hours.forEach(hour => {
     td.dataset.day = day;
     td.classList.add("droppable");
 
-    // Load from saved schedule
     const key = `${day}-${hour}`;
     if(savedSchedule[key]){
       td.textContent = savedSchedule[key];
@@ -29,41 +27,29 @@ hours.forEach(hour => {
       if(savedSchedule[key] === "نوم") td.classList.add("sleep");
     } else if(sleepHours.includes(hour)){
       td.textContent = "نوم";
-      td.classList.add("sleep", "filled");
+      td.classList.add("sleep","filled");
     } else {
       td.classList.add("empty");
     }
 
-    // Drag & Drop
-    td.addEventListener("dragover", e => e.preventDefault());
-    td.addEventListener("drop", e => {
+    td.addEventListener("dragover", e=>e.preventDefault());
+    td.addEventListener("drop", e=>{
       e.preventDefault();
       const activity = e.dataTransfer.getData("text");
-      const slot = parseInt(e.dataTransfer.getData("slot")) || 2;
-
-      for(let s=0;s<slot;s++){
-        const targetHour = hour + s;
-        if(targetHour < 24){
-          const key2 = `${day}-${targetHour}`;
-          const td2 = document.querySelector(`td[data-day='${day}'][data-hour='${targetHour}']`);
-          td2.textContent = activity;
-          td2.classList.add("filled");
-          td2.classList.remove("empty");
-          if(activity === "نوم") td2.classList.add("sleep"); else td2.classList.remove("sleep");
-          savedSchedule[key2] = activity;
-        }
-      }
+      td.textContent = activity;
+      td.classList.add("filled");
+      td.classList.remove("empty");
+      if(activity==="نوم") td.classList.add("sleep"); else td.classList.remove("sleep");
+      savedSchedule[key] = activity;
       saveSchedule();
       calculateAssessment();
     });
 
-    // Click to remove
     td.addEventListener("click", ()=>{
       if(!td.classList.contains("sleep")){
         td.textContent="";
         td.classList.remove("filled");
         td.classList.add("empty");
-        const key = `${day}-${hour}`;
         delete savedSchedule[key];
         saveSchedule();
         calculateAssessment();
@@ -76,99 +62,103 @@ hours.forEach(hour => {
 });
 
 // Drag from sidebar
-document.querySelectorAll("#activityList li").forEach(item => {
+document.querySelectorAll("#activityList li").forEach(item=>{
   item.addEventListener("dragstart", e=>{
     e.dataTransfer.setData("text", item.textContent);
-    e.dataTransfer.setData("slot", item.dataset.slot);
   });
 });
 
-// Save schedule to localStorage
 function saveSchedule(){
   localStorage.setItem("weeklySchedule", JSON.stringify(savedSchedule));
 }
 
-// Assessment
 function calculateAssessment(){
-  dailyScoresEl.innerHTML = "";
-  let totalPoints = 0;
-  let totalSlots = 0;
+  dailyScoresEl.innerHTML="";
+  const dailyExtraScoresEl = document.getElementById("dailyExtraScores");
+  dailyExtraScoresEl.innerHTML="";
+
+  let totalSleepPoints=0, totalSleepSlots=0, totalExtraPoints=0, totalExtraSlots=0;
+  const workingActivities = ["تنظيف","دراسة"];
+  const negativeActivities = ["تلفاز","استرخاء"];
 
   for(let day=0; day<days; day++){
-    let dayPoints = 0;
-    let daySlots = 24;
-    let tvCount = 0;
-    let sleepCount = 0;
-    let cleaningCount = 0;
-    let studyCount = 0;
+    let sleepPoints=0, extraPoints=0, extraSlots=0;
+    let tvCount=0, chillingCount=0;
 
     for(let h=0; h<24; h++){
-      const key = `${day}-${h}`;
+      const key=`${day}-${h}`;
       const val = savedSchedule[key] || (sleepHours.includes(h)?"نوم":"");
-      if(val==="نوم") sleepCount++;
-      if(val==="تنظيف") cleaningCount++;
-      if(val==="دراسة") studyCount++;
-      if(val==="تلفاز") tvCount++;
+
+      if(val==="نوم") sleepPoints++;
+
+      if(!sleepHours.includes(h)){
+        extraSlots++;
+        if(workingActivities.includes(val)) extraPoints+=2;
+        else if(val && val!=="") extraPoints+=1;
+        if(val==="تلفاز") tvCount++;
+        if(val==="استرخاء") chillingCount++;
+      }
     }
 
-    dayPoints = sleepCount + cleaningCount + studyCount;
-    let dayPercent = Math.round((dayPoints/24)*100);
-    totalPoints += dayPoints;
-    totalSlots += 24;
+    const sleepPercent = Math.round((sleepPoints/8)*100);
+    totalSleepPoints+=sleepPoints;
+    totalSleepSlots+=8;
 
-    // Create daily score element
-    const div = document.createElement("div");
-    div.classList.add("daily-score");
-    div.innerHTML = `اليوم ${day+1}: <span class="${dayPercent>=50?'green':'red'}">${dayPercent}%</span>`;
-    if(tvCount>2) div.innerHTML += " ⚠️ وقت التلفاز كثير!";
-    dailyScoresEl.appendChild(div);
+    const sleepDiv=document.createElement("div");
+    sleepDiv.classList.add("daily-score");
+    sleepDiv.innerHTML=`اليوم ${day+1} (نوم): <span class="${sleepPercent>=50?'green':'red'}">${sleepPercent}%</span>`;
+    dailyScoresEl.appendChild(sleepDiv);
+
+    let extraPercent=Math.round((extraPoints/(extraSlots*2))*100);
+    if(tvCount>2) extraPercent-=10;
+    if(chillingCount>2) extraPercent-=10;
+    extraPercent=Math.max(extraPercent,0);
+    totalExtraPoints+=extraPoints;
+    totalExtraSlots+=extraSlots*2;
+
+    const extraDiv=document.createElement("div");
+    extraDiv.classList.add("daily-score");
+    extraDiv.innerHTML=`اليوم ${day+1} (نشاطات): <span class="${extraPercent>=50?'green':'red'}">${extraPercent}%</span>`;
+    if(extraPercent>=75) extraDiv.innerHTML+=" 👍 ممتاز! وقتك مستغل جيدًا.";
+    else if(extraPercent>=50) extraDiv.innerHTML+=" 🙂 جيد، يمكن التحسين.";
+    else extraDiv.innerHTML+=" ⚠️ انتبه! حاول تنظيم وقتك.";
+    dailyExtraScoresEl.appendChild(extraDiv);
   }
 
-  // Weekly
-  let weeklyPercent = Math.round((totalPoints/totalSlots)*100);
-  weeklyScoreEl.textContent = `إجمالي الأسبوع: ${weeklyPercent}%`;
-  weeklyScoreEl.className = weeklyPercent>=50?"green":"red";
+  const weeklySleepPercent=Math.round((totalSleepPoints/totalSleepSlots)*100);
+  weeklyScoreEl.textContent=`إجمالي النوم: ${weeklySleepPercent}%`;
+  weeklyScoreEl.className=weeklySleepPercent>=50?"green":"red";
 
-  // Message
-  if(weeklyPercent>=75){
-    weeklyScoreEl.textContent += " 👍 رائع! أحسنت.";
-  } else if(weeklyPercent>=50){
-    weeklyScoreEl.textContent += " 🙂 جيد، يمكن التحسين.";
-  } else{
-    weeklyScoreEl.textContent += " ⚠️ انتبه! حاول تنظيم وقتك أفضل.";
-  }
+  const weeklyExtraPercent=Math.round((totalExtraPoints/totalExtraSlots)*100);
+  const weeklyExtraEl=document.getElementById("weeklyExtraScore");
+  weeklyExtraEl.textContent=`إجمالي النشاطات الأخرى: ${weeklyExtraPercent}%`;
+  weeklyExtraEl.className=weeklyExtraPercent>=50?"green":"red";
 }
 
-// Button update
 document.getElementById("recalculate").addEventListener("click", calculateAssessment);
-
-// Initial calculation
 calculateAssessment();
 
-// Export as PDF
-document.getElementById("exportPDF").addEventListener("click", async () => {
+// Export PDF/Image
+document.getElementById("exportPDF").addEventListener("click", async ()=>{
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF('landscape', 'pt', 'a4');
+  const table=document.getElementById("weekTable");
 
-  const table = document.getElementById("weekTable");
-
-  await html2canvas(table).then(canvas => {
+  await html2canvas(table).then(canvas=>{
     const imgData = canvas.toDataURL('image/png');
     const imgWidth = 800;
-    const imgHeight = canvas.height * imgWidth / canvas.width;
-    doc.addImage(imgData, 'PNG', 20, 20, imgWidth, imgHeight);
+    const imgHeight = canvas.height*imgWidth/canvas.width;
+    doc.addImage(imgData,'PNG',20,20,imgWidth,imgHeight);
     doc.save('جدول_الأسبوع.pdf');
   });
 });
 
-// Export as Image
-document.getElementById("exportImage").addEventListener("click", async () => {
-  const table = document.getElementById("weekTable");
-  html2canvas(table).then(canvas => {
-    const link = document.createElement('a');
-    link.download = 'جدول_الأسبوع.png';
-    link.href = canvas.toDataURL('image/png');
+document.getElementById("exportImage").addEventListener("click", ()=>{
+  const table=document.getElementById("weekTable");
+  html2canvas(table).then(canvas=>{
+    const link=document.createElement('a');
+    link.download='جدول_الأسبوع.png';
+    link.href=canvas.toDataURL('image/png');
     link.click();
   });
 });
-
