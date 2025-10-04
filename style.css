@@ -1,0 +1,56 @@
+body {
+  font-family: Arial, sans-serif;
+  direction: rtl;
+  margin: 20px;
+}
+
+h1 {
+  text-align: center;
+}
+
+.container {
+  display: flex;
+  gap: 20px;
+}
+
+.activities {
+  width: 150px;
+}
+
+.activities ul {
+  list-style: none;
+  padding: 0;
+}
+
+.activities li {
+  padding: 8px;
+  margin: 5px 0;
+  background-color: #f0f0f0;
+  cursor: grab;
+  border-radius: 5px;
+}
+
+.week table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.week th, .week td {
+  border: 1px solid #ccc;
+  width: 100px;
+  height: 40px;
+  text-align: center;
+  vertical-align: middle;
+}
+
+.week td {
+  background-color: #fff;
+}
+
+.week td.droppable {
+  background-color: #e0f7fa;
+}
+
+.week td.filled {
+  background-color: #a5d6a7;
+}
