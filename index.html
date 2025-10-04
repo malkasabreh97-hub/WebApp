@@ -1,39 +1,47 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>My Web App</title>
-
-  <!-- Link to manifest -->
-  <link rel="manifest" href="manifest.json">
-
-  <!-- iPhone PWA support -->
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="My Web App">
-  <link rel="apple-touch-icon" href="icon.png">
-
-  <style>
-    body { font-family: Arial; text-align: center; margin: 40px; }
-    button { padding: 12px 24px; font-size: 16px; border-radius: 10px; }
-  </style>
+  <title>جدول الأسبوع</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <h1>🚀 Welcome to My Web App</h1>
-  <p>This is a PWA that can be installed on iPhone.</p>
-  <button onclick="hello()">Click Me</button>
-
-  <script>
-    function hello() {
-      alert("Hello from your PWA!");
-    }
-
-    // Register service worker
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('service-worker.js')
-      .then(() => console.log("Service Worker registered"));
-    }
-  </script>
+  <h1>جدول الأسبوع</h1>
+  <div class="container">
+    <div class="activities">
+      <h2>أنشطة</h2>
+      <ul id="activityList">
+        <li draggable="true">استيقاظ</li>
+        <li draggable="true">تنظيف</li>
+        <li draggable="true">تلفاز</li>
+        <li draggable="true">وقت لنفسي</li>
+        <li draggable="true">دراسة</li>
+        <li draggable="true">رياضة</li>
+        <li draggable="true">طبخ</li>
+        <li draggable="true">استرخاء</li>
+        <li draggable="true">نوم</li>
+      </ul>
+    </div>
+    <div class="week">
+      <table id="weekTable">
+        <thead>
+          <tr>
+            <th>الساعة</th>
+            <th>الاثنين</th>
+            <th>الثلاثاء</th>
+            <th>الأربعاء</th>
+            <th>الخميس</th>
+            <th>الجمعة</th>
+            <th>السبت</th>
+            <th>الأحد</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Hours will be filled by JavaScript -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <script src="script.js"></script>
 </body>
 </html>
